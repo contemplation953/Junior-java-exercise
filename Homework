@@ -1,0 +1,63 @@
+package homework;
+import javax.swing.JOptionPane; 
+/*Enter two numbers a and b and search all the prime numbers from a to b.
+  And output the result every 5 numbers creat a newline.*/
+public class Test1 {
+	public static void main(String[] args){
+		int i,j,a,b,t;
+		String firstNumber,secondNumber;
+		firstNumber =JOptionPane.showInputDialog( "输入第一个数" );//enter frist integer
+		a=Integer.parseInt(firstNumber);
+	    secondNumber =JOptionPane.showInputDialog( "输入第二个数" ); //enter second integer
+	    b=Integer.parseInt(secondNumber);
+		String output= "两数之间所有素数为\n";
+		String output1="\n最小的10个素数为\n";
+		String output2="\n最大的10个素数为\n";
+	    for (i=a,j=0;i<=b;i++) {
+	         if(prime(i)==1)
+	         {
+	        	 j++;
+	        	 output += i+ "  ";    	 
+	         if ( j % 5 == 0 )
+	            output += "\n";
+	         }
+	      }
+        //If the quantities of prime numbers more than 10,output the minimun 10 prime numbers and the maximal 10 numbers.
+	      if(j>=10)
+	      {   for (i=a,t=0;t!=10;i++){
+		         if(prime(i)==1)
+		         {
+		        	 t++;
+		        	 output1+= i+ "  "; 
+               //Creat a line for every 5 numbers.
+		         if ( t % 5 == 0 )
+		            output1 += "\n";
+		         }
+		         }
+		      for (i=b,t=0;t!=10;i--){
+			         if(prime(i)==1)
+			         {
+			        	 t++;
+			        	 output2 += i+ "  ";  
+                 //Creat a line for every 5 numbers.
+			         if ( t % 5 == 0 )
+			            output2 += "\n";
+			         }
+		  }	    	 
+	      }    
+	      output=output+output1+output2;
+	      JOptionPane.showMessageDialog( null, output,"The ressult is ",JOptionPane.INFORMATION_MESSAGE );
+}
+//Decide whether NUmber is a prime number.If true return 1,if not return 0.
+	public static int prime(int n){
+		int i,j=1;
+		for(i=2;i<=Math.sqrt(n);i++)
+		{
+			if(n%i!=0)
+				continue;
+			else
+				j=0;
+		}
+		return j;
+	}
+}

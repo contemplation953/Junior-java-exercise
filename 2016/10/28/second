@@ -1,0 +1,11 @@
+package qwr;
+public class Stringdemo {
+	public static void main(String[] args){
+		String s4="c:\\java\\jsp\\A.java";
+		int position=s4.lastIndexOf( '\\' );
+		System.out.println(position);
+		String filename=s4.substring(position+1,s4.length() );
+		System.out.println(filename);
+		
+	}
+}

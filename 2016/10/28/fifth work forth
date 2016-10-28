@@ -1,0 +1,19 @@
+package qwr;
+
+public class end {
+	public static void main(String[] args){
+		String s="";
+		int CHAR=0,NUMBER=0,CH=0,KONGGE=0,ELSE=0,i;
+		char a;
+		do{
+			i=0;
+			if(s.charAt(i)>63&&s.charAt(i)<89)
+			else
+				if
+				else
+					if
+					else if
+			i++;
+		}while((s.charAt(i))=='\0');
+	}
+}

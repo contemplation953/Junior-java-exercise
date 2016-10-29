@@ -1,19 +1,51 @@
-package qwr;
-
-public class end {
+package homework;
+import java.io.*;
+public class Inputandcount {
 	public static void main(String[] args){
+		int UCHAR=0,LCHAR=0,NUMBER=0,BLANK=0,ELSE=0,i;//大写字母，小写字母，数字，空格，其他
+		try{
+			//防止文件建立或读取失败，用catch捕捉错误并打印，也可以用throw
+			/*读入txt文件*/
+			String pathname="C:\\experiment.txt";//绝对路径
+			File filename=new File(pathname);//读取路径上的文件
+			InputStreamReader reader=new InputStreamReader(
+					new FileInputStream(filename));//建立一个输入流对象
+			BufferedReader br=new BufferedReader(reader);//建立一个对象，把文件内容转换为2进制？？？
+			String line="";
+			line=br.readLine();
+			while(line!=null){
+				line=br.readLine();//按行读取
+				System.out.println(line);
+				for(i=0;i<line.length();i++){//查找
+					if(line.charAt(i)>=65&&line.charAt(i)<=90)
+						UCHAR++;
+						else
+							if(line.charAt(i)>=97&&line.charAt(i)<=122)
+								LCHAR++;
+							else
+								if(line.charAt(i)>=48&&line.charAt(i)<=57)
+									NUMBER++;
+								else
+									if(line.charAt(i)==32)
+								BLANK++;
+									else
+										ELSE++;
+				}
+		}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		String s="";
-		int CHAR=0,NUMBER=0,CH=0,KONGGE=0,ELSE=0,i;
-		char a;
-		do{
-			i=0;
-			if(s.charAt(i)>63&&s.charAt(i)<89)
-			else
-				if
-				else
-					if
-					else if
-			i++;
-		}while((s.charAt(i))=='\0');
+		s+="大写字母个数\n";
+		s+=UCHAR+"\n";
+		s+="小写字母个数\n";
+		s+=LCHAR+"\n";
+		s+="数字个数\n";
+		s+=NUMBER+"\n";
+		s+="空格个数\n";
+		s+=BLANK+"\n";
+		s+="其他字符个数\n";
+		s+=ELSE;
+		System.out.println(s);
 	}
 }

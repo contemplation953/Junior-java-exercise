@@ -1,0 +1,46 @@
+package efwfe;
+class Point2D {//父类
+	int x;
+	int y;
+	Point2D(int a,int b){
+		x=a;
+		y=b;
+	}
+	Point2D(){
+		x=0;
+		y=0;
+	}
+	public void offset(int a,int b){
+		x=x+a;
+		y=y+b;
+	}
+}
+
+class Point3D extends Point2D {
+	int x,y,z;
+    Point3D(int a,int b,int c){
+    	x=a;
+    	y=b;
+    	z=c;
+    }
+    Point3D(Point2D p,int c){
+    	x=p.x;
+    	y=p.y;
+    	z=c;
+    }
+    public void offset(int a,int b,int c){
+    	x=x+a;
+		y=y+b;
+		z=z+c;
+    }
+}
+public class test1 {
+		public static void main(String[] args){
+	    	Point2D a1=new Point2D(1,2);
+	    	Point2D a2=new Point2D(1,2);
+	    	System.out.println(Math.sqrt((a2.x-a1.x)*(a2.x-a1.x)+(a2.y-a1.y)*(a2.y-a1.y)));
+	    	Point3D b1=new Point3D(1,2,3);
+	    	Point3D b2=new Point3D(a2,3);
+	    	System.out.println(Math.sqrt((b2.x-b1.x)*(b2.x-b1.x)+(b2.y-b1.y)*(b2.y-b1.y)+(b2.z-b1.z)*(b2.z-b1.z)));
+	    }
+}

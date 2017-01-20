@@ -1,0 +1,414 @@
+package Gongwen;
+import java.io.*;
+import java.util.Scanner;
+import java.util.StringTokenizer;
+
+/*
+ * 账号、密码类*/
+public class Pass {
+	String accounts,password;//账号密码
+	Pass(){
+		this.accounts="0";
+		this.password="0";
+	}
+	Pass(String a,String b){
+		this.accounts=a;
+		this.password=b;
+	}
+	//私有方法，将账号密码从文件中读出
+	private Pass[] readAccount(){
+		Pass[] a=new Pass[10];		 
+		try{
+			BufferedReader in = new BufferedReader(new FileReader("C:\\Gongwen\\PassInfoTable.txt"));
+			String s1=in.readLine();
+			for(int i=0;i<=4;i++){
+				String s=in.readLine();
+			    StringTokenizer t = new StringTokenizer(s, "|");
+			    a[i]=new Pass(t.nextToken(),t.nextToken());
+			}
+			in.close();
+			}catch(Exception e){
+				e.printStackTrace();
+			}finally{return a;}
+		}
+	/*
+	 * 验证密码是否正确,a是账号，b是密码*/
+	public int isTrue(String a,String b){
+		int i=0;//不正确输出0
+		Pass[] p=new Pass[5];
+		p=this.readAccount();
+		for(int j=0;j<=4;j++){
+			if(a.equals(p[j].accounts)&&b.equals(p[j].password)&&a.endsWith("0"))
+				i=1;//厂长
+			else if(a.equals(p[j].accounts)&&b.equals(p[j].password)&&a.equals("1"))
+				i=2;//办公室
+			else if(a.equals(p[j].accounts)&&b.equals(p[j].password))
+				i=3;//部门
+		}
+		return i;
+	}
+	/*
+	 * 初始化账户文件*/
+	public void initializeAccount(Pass[] a)throws IOException{
+		 PrintWriter in = new PrintWriter(new FileWriter("C:\\Gongwen\\PassInfoTable.txt"),true);
+		 in.println("账号"+"密码");
+		 for(int i=0;i<=a.length-1;i++){
+			 in.println(a[i].accounts+"|"+a[i].password);
+		 }
+		 in.close();
+	}
+}
+class LOginException extends Exception{
+	LOginException(String s){super(s);}
+}
+--------------------------------------------------------------------------------------------
+package Gongwen;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.RandomAccessFile;
+import java.util.*;
+
+public class Fileop {
+	//写新得公文并将公文绝对路径写入beforesign文件。
+		public void DepWritedocd()throws IOException{
+			System.out.println("请输入文件名");
+			Scanner s=new Scanner(System.in);
+			//文件名
+			String fileName=s.nextLine();
+			//指针in指向写公文的文件
+			PrintWriter in = new PrintWriter(new FileWriter("C:\\Gongwen"+ "\\"+fileName+".txt"),true);
+			//指针fileend指向beforesign文件
+			RandomAccessFile fileend = 
+                    new RandomAccessFile("C:\\Gongwen\\BeforeSign.txt", "rw"); 
+			long a=fileend.length();
+			System.out.println("请输入文本，回车换行,最后一行输入end结束");
+			boolean t;
+			do{
+				String s1=s.nextLine();
+				if(s1.equals("end"))
+					t=false;
+				else
+					{t=true;
+					in.println(s1);}			
+			}while(t);
+			in.close();
+			fileName="C:\\Gongwen\\BeforeSign"+ "\\"+fileName+".txt";
+			fileend.seek(a);
+			fileend.write((fileName+"\n").getBytes());
+		}
+		//部门和办公室读公文的方法，只能在aftersign找到文件名并打开
+		public void DepReaddoc()throws IOException{
+			String s="";
+			boolean iif;
+			//指针in指向after文件，该文件存储已签收文件的绝对地址，获得绝对地址并查看。
+			BufferedReader in = new BufferedReader(new FileReader("C:\\Gongwen\\aftersign.txt"));
+			//不知道文件中有多少数据，所以用list结构，为了方便查询，选择ArralyList结构
+			ArrayList a=new ArrayList();
+			while((s=in.readLine())!=null){
+				a.add(s);
+			}
+			System.out.println("可阅读文件如下:");
+			for(int i=0;i<a.size();i++)
+				System.out.println(a.get(i));
+			do{
+			System.out.println("选择并输入文件的绝对路径，按照格式:C:\\Gongwen\\.txt");
+			Scanner p=new Scanner(System.in);
+			String fileName=p.nextLine();
+			//获得目的文件的绝对地址fileName之后，用指针打开。
+			System.out.println("文章内容如下:\n");
+			BufferedReader in1 = new BufferedReader(new FileReader("C:\\Gongwen\\"+fileName+".txt"));
+			while((s=in1.readLine())!=null)
+			{
+				System.out.println(s);
+			}
+			System.out.println("是否继续阅读其他公文:\n1.是\n2.否");
+			int t=p.nextInt();
+			if(t==1)
+				iif=true;
+			else
+				iif=false;
+			}while(iif);
+		}
+		//删除文件的方法
+		public void Delete()throws IOException{
+			String s="";
+			boolean iif;
+			//指针in指向after文件，该文件存储已签收文件的绝对地址，获得绝对地址并查看。
+			BufferedReader in = new BufferedReader(new FileReader("C:\\Gongwen\\BeforeSign.txt"));
+			//不知道文件中有多少数据，所以用list结构，为了方便查询，选择ArralyList结构
+			ArrayList a=new ArrayList();
+			while((s=in.readLine())!=null){
+				a.add(s);
+			}
+			System.out.println("可阅读文件如下:");
+			for(int i=0;i<a.size();i++)
+				System.out.println(a.get(i));
+			do{
+			System.out.println("选择并输入文件名:");
+			Scanner p=new Scanner(System.in);
+			String fileName=p.nextLine();
+			//获得目的文件的绝对地址fileName之后，用指针打开。
+			System.out.println("文章内容如下:\n");
+			BufferedReader in1 = new BufferedReader(new FileReader("C:\\Gongwen\\"+fileName+".txt"));
+			while((s=in1.readLine())!=null)
+			{
+				System.out.println(s);
+			}
+			System.out.println("是否删除该公文？\n1.是\n2.否");
+			int t1=p.nextInt();
+			if(t1==1)
+			{File file=new File(fileName);
+			file.delete();
+			System.out.println("公文删除成功!");
+			//将该文件在beforesign上的记录删掉。
+			this.Rewrite(fileName);			
+				}
+			System.out.println("是否继续阅读其他公文:\n1.是\n2.否");
+			int t=p.nextInt();
+			if(t==1)
+				iif=true;
+			else
+				iif=false;
+			}while(iif);
+		}
+		//厂长阅读的方法
+		public void Readdoc(int w) throws IOException{
+		    if(w==1||w==2){
+			String s="";
+			boolean iif;
+			//指针in指向after文件，该文件存储已签收文件的绝对地址，获得绝对地址并查看。
+			BufferedReader in; 
+			if(w==1)
+			in= new BufferedReader(new FileReader("C:\\Gongwen\\BeforeSign.txt"));
+			else
+				in=new BufferedReader(new FileReader("C:\\Gongwen\\aftersign.txt"));
+			//不知道文件中有多少数据，所以用list结构，为了方便查询，选择ArralyList结构
+			ArrayList a=new ArrayList();
+			while((s=in.readLine())!=null){
+				a.add(s);
+			}
+			System.out.println("可阅读文件如下:");
+			for(int i=0;i<a.size();i++)
+				System.out.println(a.get(i));
+			do{
+			System.out.println("选择并输入文件名");
+			Scanner p=new Scanner(System.in);
+			String fileName=p.nextLine();
+			//获得目的文件的绝对地址fileName之后，用指针打开。
+			System.out.println("文章内容如下:\n");
+			BufferedReader in1 = new BufferedReader(new FileReader("C:\\Gongwen\\"+fileName+".txt"));
+			while((s=in1.readLine())!=null)
+			{
+				System.out.println(s);
+			}
+			System.out.println("是否继续阅读其他公文:\n1.是\n2.否");
+			int t=p.nextInt();
+			if(t==1)
+				iif=true;
+			else
+				iif=false;
+			}while(iif);
+	}
+		    else{try{
+		    	throw new Input("输入格式错误！请从1或2中选择输入");
+		    	}catch(Input e){System.out.println(e);
+		    	Scanner f=new Scanner(System.in);
+		    	int q=f.nextInt();
+		    	Readdoc(q);
+		    	}
+		    }
+	}
+		//厂长审核的方法
+		public void Sign()throws IOException{
+			String s="";
+			boolean iif;
+			//指针in指向after文件，该文件存储已签收文件的绝对地址，获得绝对地址并查看。
+			BufferedReader in = new BufferedReader(new FileReader("C:\\Gongwen\\BeforeSign.txt"));
+			//不知道文件中有多少数据，所以用list结构，为了方便查询，选择ArralyList结构
+			ArrayList a=new ArrayList();
+			while((s=in.readLine())!=null){
+				a.add(s);
+			}
+			System.out.println("可阅读文件如下:");
+			for(int i=0;i<a.size();i++)
+				System.out.println(a.get(i));
+			do{
+			System.out.println("选择并输入文件名");
+			Scanner p=new Scanner(System.in);
+			String fileName=p.nextLine();
+			//获得目的文件的绝对地址fileName之后，用指针打开。
+			System.out.println("文章内容如下:\n");
+			BufferedReader in1 = new BufferedReader(new FileReader("C:\\Gongwen\\"+fileName+".txt"));
+			while((s=in1.readLine())!=null)
+			{
+				System.out.println(s);
+			}
+			System.out.println("是否通过该公文？\n1.是\n2.否");
+			int t1=p.nextInt();
+			if(t1==1)
+			{
+				//将其写入after文件
+				//指针fileend指向beforesign文件
+				RandomAccessFile fileend = 
+	                    new RandomAccessFile("C:\\Gongwen\\aftersign.txt", "rw"); 
+				long t=fileend.length();
+				fileend.seek(t);
+				fileend.writeUTF(fileName);
+			System.out.println("公文已通过!");
+			//从before中删去该文件
+			this.Rewrite(fileName);
+				} 
+			System.out.println("是否继续阅读其他公文:\n1.是\n2.否");
+			int t=p.nextInt();
+			if(t==1)
+				iif=true;
+			else
+				iif=false;
+			}while(iif);
+		}
+		//从before中删除某个文本的方法，实际就是全部读出到list，在list中删除后重写。声明为私有，外部不能调用。
+		private void Rewrite(String fileName)throws IOException{
+			String s="";
+			boolean iif;
+			//指针in指向after文件，该文件存储已签收文件的绝对地址，获得绝对地址并查看。
+			BufferedReader in = new BufferedReader(new FileReader("C:\\Gongwen\\BeforeSign.txt"));
+			//不知道文件中有多少数据，所以用list结构，为了方便查询，选择ArralyList结构
+			ArrayList a=new ArrayList();
+			while((s=in.readLine())!=null){
+				a.add(s);
+			}
+			Iterator it=a.iterator();
+			while(it.hasNext()){
+				if(it.next().equals(fileName))
+					it.remove();
+			}
+			PrintWriter in1 = new PrintWriter(new FileWriter("C:\\Gongwen"+ "\\BeforeSign.txt"),true);
+			for(int i=1;i<=a.size()-1;i++){
+				in1.println(a.get(i).toString());
+			}
+		}
+}
+class Input extends Exception{
+	Input(String s){super(s);}
+}
+
+--------------------------------------------------------------------------------------------
+package Gongwen;
+
+import java.io.*;
+import java.util.Scanner;
+public class Login {
+	public static void main(String[] args)throws IOException{
+		Pass[] a=new Pass[5];
+		a[0]=new Pass("0","0");
+		a[1]=new Pass("1","1");
+		a[2]=new Pass("2","2");
+		a[3]=new Pass("3","3");
+		a[4]=new Pass("4","4");
+		a[0].initializeAccount(a);
+		showFace(LOgin(a[0]));
+	}
+	//显示界面，传入参数w代表对应的不同部门（厂长||部门||办公室）
+	static void showFace(int rank)throws IOException{
+		Fileop p=new Fileop();
+		if(rank==1){
+		String s="*****************************************\n";
+    	s=s+"          模拟公司公文系统——厂长    \n";
+    	s=s+"****************************************\n";
+    	s=s+"    1、读公文\n";
+    	s=s+"    2、审核公文\n";
+    	s=s+"    3、输入5结束\n";
+    	Scanner S1=new Scanner(System.in);
+    	do{
+            System.out.println(s);       	
+        	int i=S1.nextInt();
+        	if(i==1){
+        		System.out.println("1.阅读未审核公文\n2.阅读已审核公文");
+        		int j=S1.nextInt();
+        		p.Readdoc(j);}	
+        	else if(i==2)
+        		p.Sign();;
+        		break;
+        	}while(true);
+    	}
+		else if(rank==2)
+		{
+			Fileop p1=new Fileop();
+			String s="*****************************************\n";
+	    	s=s+"          模拟公司公文系统——办公室    \n";
+	    	s=s+"*****************************************\n";
+	    	s=s+"    1、读公文\n";
+	    	s=s+"    2、删除公文\n";
+	    	s=s+"    3、输入3结束\n";
+	    	Scanner S2=new Scanner(System.in);
+	    	do{
+	            System.out.println(s);        	
+	        	int i=S2.nextInt();
+	        	if(i==1)
+	        		p1.DepReaddoc();	
+	        	else if(i==2)
+	        		p1.Delete();
+	        	else
+	        		break;
+	        	}while(true);
+	    	}
+		else
+		{
+			Fileop p2=new Fileop();
+			String s="*****************************************\n";
+	    	s=s+"          模拟公司公文系统——部门    \n";
+	    	s=s+"*****************************************\n";
+	    	s=s+"    1、写公文\n";
+	    	s=s+"    2、读公文\n";
+	    	s=s+"    3、输入3结束\n"; 	
+	    	Scanner in=new Scanner(System.in);
+	    	do{   		
+	            System.out.print(s);	            
+	        	int i=in.nextInt();
+	        	if(i==1)
+	        		p2.DepWritedocd();	
+	        	else if(i==2)
+	        		p2.DepReaddoc();
+	        	else
+	        		break;
+	        	}while(true);
+	    	in.close();
+	    	}
+	}
+	/*
+	 * 登录界面，输入账号密码。传入一个Pass实例化的类，用来调用类中的isTrue方法
+	 * 返回一个整型参数i，1表示高级权限，2表示低级权限*/
+	static int LOgin(Pass a){	
+		int i=0;
+		try{		
+			boolean t;
+			int j=1;
+		do{
+		System.out.println("***********************************************");
+		Scanner in=new Scanner(System.in);
+		System.out.println("请输入账号");
+		String account=in.nextLine();
+		System.out.println("请输入密码");
+		String password = in.nextLine();
+		i=a.isTrue(account, password);
+		if(i!=0||j>=3)
+	    t=false;
+		else
+		{t=true;
+		System.out.println("密码错误，请重新输入！您还有"+(3-j)+"次机会！");}
+		j++;
+		}while(t);
+		if(j>=3)
+		throw new LOginException("输入密码错误三次！机器锁定！");
+	}catch(LOginException e){
+		System.out.println(e);
+		System.exit(0);
+	}finally{return i;}
+	}
+}
+
